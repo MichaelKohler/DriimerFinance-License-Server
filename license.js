@@ -1,28 +1,42 @@
 (function () {
+  var Datastore = require('nedb'),
+      db = new Datastore({ filename: 'license.db', autoload: true });
+
   exports.createLicense = function createLicense(req, res) {
     var today = new Date(),
         oneYearInMs = 365 * 24 * 60 * 60 * 1000,
         inAYear = new Date(today.getTime() + oneYearInMs),
         license = {
-            key: calcKey(),
-            validFrom: today,
-            validTo: inAYear
+          key: calcKey(),
+          validFrom: today,
+          validTo: inAYear
         };
-    // TODO: save in DB
-    res.send(JSON.stringify(license));
+    db.insert(license, function (err, addedLicense) {
+      res.send(JSON.stringify(license));
+    });
   };
 
   exports.checkLicense = function checkLicense(req, res) {
-    // TODO: get from DB according to key
-    var valid = false,
-        tooEarly = false,
-        tooLate = false;
+    var licenseKeyToCheck = req.body.key;
+    db.find({ key: licenseKeyToCheck}, function (error, license) {
+      if (error) {
+        return JSON.stringify(error);
+      }
+      var validFrom = new Date(license.validFrom),
+          validTo = new Date(license.validTo),
+          foundLicense = {
+            valid: validFrom <= new Date() && new Date() <= validTo,
+            validFrom: validFrom,
+            validTo: validTo
+          };
+          res.send(JSON.stringify(foundLicense));
+    });
   };
 
   function calcKey() {
     var generatedCode = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+      var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
     });
     return generatedCode;
   }

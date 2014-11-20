@@ -3,7 +3,7 @@ Desktop.ini
 *~
 *.swp
 *.tmp
-
+*.db
 .project
 .settings
 target
