@@ -22,8 +22,8 @@
       if (error) {
         return JSON.stringify(error);
       }
-      var validFrom = new Date(license.validFrom),
-          validTo = new Date(license.validTo),
+      var validFrom = new Date(license[0].validFrom),
+          validTo = new Date(license[0].validTo),
           foundLicense = {
             valid: validFrom <= new Date() && new Date() <= validTo,
             validFrom: validFrom,
