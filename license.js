@@ -18,16 +18,21 @@
 
   exports.checkLicense = function checkLicense(req, res) {
     var licenseKeyToCheck = req.body.key;
-    db.find({ key: licenseKeyToCheck}, function (error, license) {
+    console.log(licenseKeyToCheck);
+    db.find({ key: licenseKeyToCheck }, function (error, license) {
       if (error) {
-        return JSON.stringify(error);
+        res.send(JSON.stringify(error));
+        return;
       }
+      console.log(error);
+      console.log(license);
       if (license.length == 0) {
-        return JSON.stringify({
+        res.send(JSON.stringify({
           valid: false,
           validFrom: 0,
           validTo: 0
-        });
+        }));
+        return;
       }
       var validFrom = new Date(license[0].validFrom),
           validTo = new Date(license[0].validTo),
@@ -36,7 +41,7 @@
             validFrom: validFrom,
             validTo: validTo
           };
-          res.send(JSON.stringify(foundLicense));
+      res.send(JSON.stringify(foundLicense));
     });
   };
 
