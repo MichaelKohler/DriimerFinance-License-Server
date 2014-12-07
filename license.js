@@ -22,6 +22,13 @@
       if (error) {
         return JSON.stringify(error);
       }
+      if (license.length == 0) {
+        return JSON.stringify({
+          valid: false
+          validFrom: 0,
+          validTo: 0
+        });
+      }
       var validFrom = new Date(license[0].validFrom),
           validTo = new Date(license[0].validTo),
           foundLicense = {
