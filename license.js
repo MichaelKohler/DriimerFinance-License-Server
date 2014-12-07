@@ -24,7 +24,7 @@
       }
       if (license.length == 0) {
         return JSON.stringify({
-          valid: false
+          valid: false,
           validFrom: 0,
           validTo: 0
         });
